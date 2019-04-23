@@ -79,7 +79,7 @@ game_over = False
 turn = 0
 
 pygame.init()
-myfont = pygame.font.SysFont("monospace", 75)
+myfont = pygame.font.SysFont("Arial", 75)
 draw_board(board)
 pygame.display.update()
 
@@ -110,7 +110,7 @@ while not game_over:
 
                     if check_win(board, 1):
                         label = myfont.render("Player 1 wins!!", 1, RED)
-                        board_screen.blit(label, (40, 10))
+                        board_screen.blit(label, (100, 10))
                         game_over = True
             elif turn == 1:
                 x_pos = event.pos[0]
@@ -122,7 +122,7 @@ while not game_over:
 
                     if check_win(board, 2):
                         label = myfont.render("Player 2 wins!!", 2, YELLOW)
-                        board_screen.blit(label, (40, 10))
+                        board_screen.blit(label, (100, 10))
                         game_over = True
             pygame.display.update()
             print_board(board)
