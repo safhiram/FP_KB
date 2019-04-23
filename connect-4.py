@@ -87,7 +87,18 @@ while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+
+        if event.type == pygame.MOUSEMOTION:
+            pygame.draw.rect(board_screen, BLACK, (0,0, width, SQUARE))
+            x_pos = event.pos[0]
+            if turn == 0:
+                pygame.draw.circle(board_screen, RED, (x_pos, SQUARE//2), RAD)
+            else:
+                pygame.draw.circle(board_screen, YELLOW, (x_pos, SQUARE//2), RAD)
+        pygame.display.update()
+
         if event.type == pygame.MOUSEBUTTONDOWN:
+            pygame.draw.rect(board_screen, BLACK, (0,0, width, SQUARE))
             print(event.pos)
             if turn == 0:
                 x_pos = event.pos[0]
@@ -113,7 +124,7 @@ while not game_over:
                         label = myfont.render("Player 2 wins!!", 2, YELLOW)
                         board_screen.blit(label, (40, 10))
                         game_over = True
-            
+            pygame.display.update()
             print_board(board)
             draw_board(board)
             turn += 1
