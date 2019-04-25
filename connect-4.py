@@ -13,8 +13,8 @@ GOLD = (255, 213, 0)
 BLACK = (0, 0, 0)
 GREEN = (68, 204, 0)
 
-PLAYER_1 = 1
-PLAYER_2 = 2
+PLAYER_1 = 1 #player
+PLAYER_2 = 2 #AI
 WINDOW_SIZE = 4
 
 height = (ROW_COUNT+1)*SQUARE
@@ -74,18 +74,18 @@ def check_win(board, piece):
 def evaluate_neighboor(window, piece):
     score = 0
     if piece == PLAYER_1:
-        opponent = PLAYER_1
-    elif piece == PLAYER_2:
         opponent = PLAYER_2
+    elif piece == PLAYER_2:
+        opponent = PLAYER_1
     
     if window.count(piece) == 4:
-        score += 80
+        score += 100
     elif window.count(piece) == 3 and window.count(0) == 1:
-        score += 50
-    elif window.count(piece) == 2 and window.count(0) == 2:
-        score += 10
-    elif window.count(piece) == 1 and window.count(0) == 3:
         score += 5
+    elif window.count(piece) == 2 and window.count(0) == 2:
+        score += 2
+    # elif window.count(piece) == 1 and window.count(0) == 3:
+    #     score += 5
     
     if window.count(opponent) == 3 and window.count(0) == 1:
         score -= 5
@@ -124,19 +124,19 @@ def check_score(board, piece):
             score += evaluate_neighboor(window, piece)
     # Vertical check
     for c in range(COL_COUNT):
-        c_array = [i for i in list(board[c,:])]
+        c_array = [i for i in list(board[:,c])]
         for r in range(ROW_COUNT-3):
             window = c_array[r:r+WINDOW_SIZE]
             score += evaluate_neighboor(window, piece)
     # Diagonal
     for r in range(ROW_COUNT-3):
-        for c in range(ROW_COUNT-3):
+        for c in range(COL_COUNT-3):
             window = []
             for i in range(WINDOW_SIZE):
                 window.append(board[r+i][c+i])
             score += evaluate_neighboor(window, piece)
     for r in range(ROW_COUNT-3):
-        for c in range(ROW_COUNT-3):
+        for c in range(COL_COUNT-3):
             window = []
             for i in range(WINDOW_SIZE):
                 window.append(board[r+3-i][c+i])
@@ -165,13 +165,13 @@ def alpha_beta(board, state, alpha, beta, depth):
         for c in move:
             r = get_unvisited(board, c)
             board_c = board.copy()
-            fill_board(board, r, c, PLAYER_2)
-            new_score = alpha_beta(board, False, alpha, beta, depth-1)
+            fill_board(board_c, r, c, PLAYER_2)
+            new_score = alpha_beta(board_c, False, alpha, beta, depth-1)[1]
             if new_score > current_val:
                 current_val = new_score
                 col = c
             alpha = max(alpha, current_val)
-            if alpha > beta:
+            if alpha >= beta:
                 break
 
         return col, current_val
@@ -181,13 +181,13 @@ def alpha_beta(board, state, alpha, beta, depth):
         for c in move:
             r = get_unvisited(board, c)
             board_c = board.copy()
-            fill_board(board, r, c, PLAYER_1)
-            new_score = alpha_beta(board, False, alpha, beta, depth-1)
-            if new_score > current_val:
+            fill_board(board_c, r, c, PLAYER_1)
+            new_score = alpha_beta(board_c, True, alpha, beta, depth-1)[1]
+            if new_score < current_val:
                 current_val = new_score
                 col = c
             beta = min(beta, current_val)
-            if alpha > beta:
+            if alpha >= beta:
                 break
         return col, current_val
 
@@ -249,8 +249,8 @@ while not game_over:
                     pygame.display.update()
                     print_board(board)
                     draw_board(board)
-                    turn += 1
-                    turn %= 2
+                    turn ^= 1
+
     # AI harus diluar event
     if turn == 1:
         col, score = alpha_beta(board, True, -math.inf, math.inf, 3)
@@ -263,10 +263,12 @@ while not game_over:
                 label = myfont.render("Player 2 wins!!", 1, GOLD)
                 board_screen.blit(label, (100, 10))
                 game_over = True
-            pygame.display.update()
+            
             print_board(board)
             draw_board(board)
-        turn += 1
-        turn %= 2
+            pygame.display.update()
+        
+            turn ^= 1
+
     if game_over:
-        pygame.time.wait(2000)
+        pygame.time.wait(5000)
