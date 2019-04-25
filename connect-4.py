@@ -63,7 +63,7 @@ def check_win(board, piece):
 
     for c in range(COL_COUNT-3):  # Positive Diagonal
         for r in range(ROW_COUNT-3):
-            if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3]:
+            if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == piece:
                 return True
 
     for c in range(COL_COUNT-3):
@@ -88,7 +88,7 @@ def evaluate_neighboor(window, piece):
     #     score += 5
     
     if window.count(opponent) == 3 and window.count(0) == 1:
-        score -= 5
+        score -= 4
 
     return score
 
@@ -190,22 +190,6 @@ def alpha_beta(board, state, alpha, beta, depth):
             if alpha >= beta:
                 break
         return col, current_val
-
-def best_move(board, piece):
-    move = next_move(board)
-    best_score = -math.inf
-    best_col = random.choice(move)
-
-    for c in move:
-        r = get_unvisited(board, c)
-        board_c = board.copy()
-        fill_board(board, r, c, piece)
-        score = check_score(board, piece)
-        if score > best_score:
-            best_score = score
-            best_col = c
-    return best_col
-
 
 board = create_board()
 print_board(board)
