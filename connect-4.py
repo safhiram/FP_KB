@@ -96,7 +96,7 @@ def evaluate_neighbour(window, piece):
     # elif window.count(piece) == 1 and window.count(0) == 3:
     #     score += 5
 
-    if window.count(opponent) == 3 and window.count(0) == 1:
+    if window.count(opponent) >= 3 and window.count(0) == 1:
         score -= 5
 
     return score
@@ -130,12 +130,14 @@ def check_score(board, piece):
         r_array = [i for i in list(board[r, :])]
         for c in range(COL_COUNT-3):
             window = r_array[c:c+WINDOW_SIZE]
+            # print("HOR " + str(window))
             score += evaluate_neighbour(window, piece)
     # Vertical check
     for c in range(COL_COUNT):
         c_array = [i for i in list(board[:, c])]
         for r in range(ROW_COUNT-3):
             window = c_array[r:r+WINDOW_SIZE]
+            # print("VER " + str(window))
             score += evaluate_neighbour(window, piece)
     # Diagonal
     for r in range(ROW_COUNT-3):
@@ -143,12 +145,14 @@ def check_score(board, piece):
             window = []
             for i in range(WINDOW_SIZE):
                 window.append(board[r+i][c+i])
+                # print("DP " + str(window))
             score += evaluate_neighbour(window, piece)
     for r in range(ROW_COUNT-3):
         for c in range(COL_COUNT-3):
             window = []
             for i in range(WINDOW_SIZE):
                 window.append(board[r+3-i][c+i])
+                # print("DN " + str(window))
             score += evaluate_neighbour(window, piece)
 
     return score
@@ -236,7 +240,7 @@ while not game_over:
 
                     if check_win(board, PLAYER_1):
                         label = myfont.render("Player 1 Menang.", 1, GREEN)
-                        board_screen.blit(label, (100, 10))
+                        board_screen.blit(label, (60, 10))
                         game_over = True
                         turn = 0
                         pygame.display.update()
@@ -255,7 +259,7 @@ while not game_over:
 
             if check_win(board, PLAYER_2):
                 label = myfont.render("Player 2 Menang.", 1, GOLD)
-                board_screen.blit(label, (100, 10))
+                board_screen.blit(label, (60, 10))
                 game_over = True
 
             print_board(board)
