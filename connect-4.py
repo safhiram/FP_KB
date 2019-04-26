@@ -97,7 +97,7 @@ def evaluate_neighbour(window, piece):
     #     score += 5
 
     if window.count(opponent) == 3 and window.count(0) == 1:
-        score -= 4
+        score -= 5
 
     return score
 
@@ -234,14 +234,15 @@ while not game_over:
                     row = get_unvisited(board, col)
                     fill_board(board, row, col, 1)
 
-                    if check_win(board, 1):
+                    if check_win(board, PLAYER_1):
                         label = myfont.render("Player 1 Menang.", 1, GREEN)
                         board_screen.blit(label, (100, 10))
                         game_over = True
-
-                    pygame.display.update()
-                    print_board(board)
-                    draw_board(board)
+                        turn = 0
+                        pygame.display.update()
+                        print_board(board)
+                        draw_board(board)
+                        continue
                     turn ^= 1
 
     # AI harus diluar event
