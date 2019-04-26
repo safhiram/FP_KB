@@ -30,7 +30,7 @@ def create_board():
     return board
 
 def check_move(board, col):
-    return board[ROW_COUNT-1][col] == 0
+    return board[ROW_COUNT-1][col].any() == 0
 
 def next_move(board):
     loc = []
@@ -249,6 +249,7 @@ while not game_over:
                 game_over = True
             
             print_board(board)
+            print("SCORE : " + str(score))
             draw_board(board)
             pygame.display.update()
         
