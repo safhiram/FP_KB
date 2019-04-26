@@ -1,7 +1,8 @@
 import numpy as np
 import pygame
 import sys
-import math, random
+import math
+import random
 
 ROW_COUNT = 6
 COL_COUNT = 7
@@ -13,8 +14,8 @@ GOLD = (255, 213, 0)
 BLACK = (0, 0, 0)
 GREEN = (68, 204, 0)
 
-PLAYER_1 = 1 # player
-PLAYER_2 = 2 # AI
+PLAYER_1 = 1  # player
+PLAYER_2 = 2  # AI
 WINDOW_SIZE = 4
 
 height = (ROW_COUNT+1)*SQUARE
@@ -25,12 +26,15 @@ pygame.init()
 board_screen = pygame.display.set_mode(size)
 myfont = pygame.font.SysFont("Arial", 75)
 
+
 def create_board():
     board = np.zeros((ROW_COUNT, COL_COUNT), dtype=int)
     return board
 
+
 def check_move(board, col):
     return board[ROW_COUNT-1][col].any() == 0
+
 
 def next_move(board):
     loc = []
@@ -39,16 +43,20 @@ def next_move(board):
             loc.append(c)
     return loc
 
+
 def print_board(board):
     print(np.flip(board, 0))  # Di reverse secara x axis
+
 
 def get_unvisited(board, col):
     for r in range(ROW_COUNT):
         if board[r][col] == 0:
             return r
 
+
 def fill_board(board, row, col, piece):
     board[row][col] = piece
+
 
 def check_win(board, piece):
     for c in range(COL_COUNT-3):  # Horizontal
@@ -70,14 +78,15 @@ def check_win(board, piece):
         for r in range(3, ROW_COUNT):
             if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
                 return True
-            
+
+
 def evaluate_neighbour(window, piece):
     score = 0
     if piece == PLAYER_1:
         opponent = PLAYER_2
     elif piece == PLAYER_2:
         opponent = PLAYER_1
-    
+
     if window.count(piece) == 4:
         score += 100
     elif window.count(piece) == 3 and window.count(0) == 1:
@@ -86,7 +95,7 @@ def evaluate_neighbour(window, piece):
         score += 2
     # elif window.count(piece) == 1 and window.count(0) == 3:
     #     score += 5
-    
+
     if window.count(opponent) == 3 and window.count(0) == 1:
         score -= 4
 
@@ -118,13 +127,13 @@ def check_score(board, piece):
 
     # Horizontal check
     for r in range(ROW_COUNT):
-        r_array = [i for i in list(board[r,:])]
+        r_array = [i for i in list(board[r, :])]
         for c in range(COL_COUNT-3):
             window = r_array[c:c+WINDOW_SIZE]
             score += evaluate_neighbour(window, piece)
     # Vertical check
     for c in range(COL_COUNT):
-        c_array = [i for i in list(board[:,c])]
+        c_array = [i for i in list(board[:, c])]
         for r in range(ROW_COUNT-3):
             window = c_array[r:r+WINDOW_SIZE]
             score += evaluate_neighbour(window, piece)
@@ -143,6 +152,7 @@ def check_score(board, piece):
             score += evaluate_neighbour(window, piece)
 
     return score
+
 
 def alpha_beta(board, state, alpha, beta, depth):
     move = next_move(board)
@@ -210,8 +220,7 @@ while not game_over:
             if turn == 0:
                 pygame.draw.circle(board_screen, GREEN,
                                    (x_pos, SQUARE//2), RAD)
-            else:
-                pygame.draw.circle(board_screen, GOLD, (x_pos, SQUARE//2), RAD)
+            # print("POS " + str(event.pos))
         pygame.display.update()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -226,10 +235,10 @@ while not game_over:
                     fill_board(board, row, col, 1)
 
                     if check_win(board, 1):
-                        label = myfont.render("Player 1 wins.", 1, GREEN)
+                        label = myfont.render("Player 1 Menang.", 1, GREEN)
                         board_screen.blit(label, (100, 10))
                         game_over = True
-                    
+
                     pygame.display.update()
                     print_board(board)
                     draw_board(board)
@@ -244,15 +253,15 @@ while not game_over:
             fill_board(board, row, col, PLAYER_2)
 
             if check_win(board, PLAYER_2):
-                label = myfont.render("Player 2 wins.", 1, GOLD)
+                label = myfont.render("Player 2 Menang.", 1, GOLD)
                 board_screen.blit(label, (100, 10))
                 game_over = True
-            
+
             print_board(board)
             print("SCORE : " + str(score))
             draw_board(board)
             pygame.display.update()
-        
+
             turn ^= 1
 
     if game_over:
