@@ -8,19 +8,19 @@ COL_COUNT = 7
 SQUARE = 100
 
 # Color tuple
-BLUE = (0, 0, 255)
+BLUE = (0, 0, 200)
 GOLD = (255, 213, 0)
 BLACK = (0, 0, 0)
 GREEN = (68, 204, 0)
 
-PLAYER_1 = 1 #player
-PLAYER_2 = 2 #AI
+PLAYER_1 = 1 # player
+PLAYER_2 = 2 # AI
 WINDOW_SIZE = 4
 
 height = (ROW_COUNT+1)*SQUARE
 width = (COL_COUNT)*SQUARE
 size = (width, height)
-RAD = int(SQUARE/2 - (ROW_COUNT-1))
+RAD = SQUARE//2 - (ROW_COUNT-1)
 pygame.init()
 board_screen = pygame.display.set_mode(size)
 myfont = pygame.font.SysFont("Arial", 75)
@@ -71,7 +71,7 @@ def check_win(board, piece):
             if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
                 return True
             
-def evaluate_neighboor(window, piece):
+def evaluate_neighbour(window, piece):
     score = 0
     if piece == PLAYER_1:
         opponent = PLAYER_2
@@ -121,26 +121,26 @@ def check_score(board, piece):
         r_array = [i for i in list(board[r,:])]
         for c in range(COL_COUNT-3):
             window = r_array[c:c+WINDOW_SIZE]
-            score += evaluate_neighboor(window, piece)
+            score += evaluate_neighbour(window, piece)
     # Vertical check
     for c in range(COL_COUNT):
         c_array = [i for i in list(board[:,c])]
         for r in range(ROW_COUNT-3):
             window = c_array[r:r+WINDOW_SIZE]
-            score += evaluate_neighboor(window, piece)
+            score += evaluate_neighbour(window, piece)
     # Diagonal
     for r in range(ROW_COUNT-3):
         for c in range(COL_COUNT-3):
             window = []
             for i in range(WINDOW_SIZE):
                 window.append(board[r+i][c+i])
-            score += evaluate_neighboor(window, piece)
+            score += evaluate_neighbour(window, piece)
     for r in range(ROW_COUNT-3):
         for c in range(COL_COUNT-3):
             window = []
             for i in range(WINDOW_SIZE):
                 window.append(board[r+3-i][c+i])
-            score += evaluate_neighboor(window, piece)
+            score += evaluate_neighbour(window, piece)
 
     return score
 
@@ -226,7 +226,7 @@ while not game_over:
                     fill_board(board, row, col, 1)
 
                     if check_win(board, 1):
-                        label = myfont.render("Player 1 wins!!", 1, GREEN)
+                        label = myfont.render("Player 1 wins.", 1, GREEN)
                         board_screen.blit(label, (100, 10))
                         game_over = True
                     
@@ -244,7 +244,7 @@ while not game_over:
             fill_board(board, row, col, PLAYER_2)
 
             if check_win(board, PLAYER_2):
-                label = myfont.render("Player 2 wins!!", 1, GOLD)
+                label = myfont.render("Player 2 wins.", 1, GOLD)
                 board_screen.blit(label, (100, 10))
                 game_over = True
             
@@ -255,4 +255,4 @@ while not game_over:
             turn ^= 1
 
     if game_over:
-        pygame.time.wait(5000)
+        pygame.time.wait(2000)
